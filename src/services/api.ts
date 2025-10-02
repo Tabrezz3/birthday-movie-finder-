@@ -1,8 +1,32 @@
 import { MoviesResponse, GenresResponse, LanguagesResponse } from '../types';
 
 // Using API key from environment variables
-const API_KEY = process.env.REACT_APP_TMDB_API_KEY || 'YOUR_FALLBACK_API_KEY_HERE'; 
+const API_KEY = process.env.REACT_APP_TMDB_API_KEY || 'c16488af7ab2efaf5b5ce51f6ff22ee1'; 
 const BASE_URL = 'https://api.themoviedb.org/3';
+
+
+
+// Test API connection
+export const testApiConnection = async (): Promise<boolean> => {
+  try {
+    console.log('Testing API connection...');
+    console.log('API Key:', API_KEY ? `${API_KEY.substring(0, 8)}...` : 'Not set');
+    
+    const response = await fetch(`${BASE_URL}/configuration?api_key=${API_KEY}`);
+    const data = await response.json();
+    
+    if (response.ok) {
+      console.log('API connection successful!', data);
+      return true;
+    } else {
+      console.error('API connection failed:', data);
+      return false;
+    }
+  } catch (error) {
+    console.error('API test error:', error);
+    return false;
+  }
+};
 
 async function tmdbFetch<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
   const url = new URL(`${BASE_URL}${endpoint}`);
@@ -44,22 +68,22 @@ export const getMoviesByDate = async (month: number, day: number, year?: number)
     const monthStr = month.toString().padStart(2, '0');
     const dayStr = day.toString().padStart(2, '0');
     
-    // Use the discover/movie endpoint instead of movie/popular for date filtering
-    const params: Record<string, string> = year
-      ? {
-          'primary_release_date.gte': `${year}-${monthStr}-${dayStr}`,
-          'primary_release_date.lte': `${year}-${monthStr}-${dayStr}`,
-          'sort_by': 'popularity.desc',
-          'page': '1'
-        }
-      : {
-          'primary_release_date.gte': `1900-${monthStr}-${dayStr}`,
-          'primary_release_date.lte': `2030-${monthStr}-${dayStr}`,
-          'sort_by': 'primary_release_date.desc',
-          'page': '1'
-        };
+    // For birthday movie finder, we want movies released on the same month/day across all years
+    const params: Record<string, string> = {
+      'sort_by': 'popularity.desc',
+      'page': '1'
+    };
 
-    // Use the correct endpoint for date filtering
+    // If year is provided, search for that specific date
+    if (year) {
+      params['primary_release_date.gte'] = `${year}-${monthStr}-${dayStr}`;
+      params['primary_release_date.lte'] = `${year}-${monthStr}-${dayStr}`;
+    } else {
+      // Search across all years for the same month/day
+      params['primary_release_date.gte'] = `1900-${monthStr}-${dayStr}`;
+      params['primary_release_date.lte'] = `2030-${monthStr}-${dayStr}`;
+    }
+
     return await tmdbFetch<MoviesResponse>('/discover/movie', params);
   } catch (error) {
     console.error('Error fetching movies:', error);
