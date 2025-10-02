@@ -41,7 +41,7 @@ A beautiful and intuitive React application that discovers movies released on yo
 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/birthday-movie-finder.git
+git clone https://github.com/Tabrezz3/birthday-movie-finder.git
 cd birthday-movie-finder
 ```
 
