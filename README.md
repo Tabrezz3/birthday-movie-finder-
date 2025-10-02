@@ -1,26 +1,32 @@
-# Birthday Movie Finder
+# 🎬 Birthday Movie Finder
 
-A luxurious and minimalist website that shows you which movies were released on your birthday throughout cinema history.
+A beautiful and intuitive React application that discovers movies released on your birthday! Enter your birth date and explore cinema history to see what films premiered on your special day.
 
-## Features
+## ✨ Features
 
-- Search for movies released on a specific date (month and day)
-- Filter results by genre
-- Sort results by release date, popularity, or title
-- Responsive design for all devices
-- Elegant animations and transitions
+- **Date Selection**: Interactive date picker to select your birthday
+- **Movie Discovery**: Find movies released on any specific date
+- **Smart Filtering**: Filter results by genre and language
+- **Flexible Sorting**: Sort by popularity, release date, or title
+- **Popular Movies**: Discover trending movies with an elegant slider
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Dark Theme**: Modern dark UI with smooth animations
+- **Fast Performance**: Optimized API calls with caching
 
 ## Screenshots
 
 (Screenshots will be added once the application is deployed)
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- React
-- TypeScript
-- Tailwind CSS
-- Framer Motion for animations
-- TMDB API for movie data
+- **Frontend**: React 19 with TypeScript
+- **Styling**: Tailwind CSS for responsive design
+- **Animations**: Framer Motion for smooth transitions
+- **Date Picker**: React DatePicker component
+- **Icons**: React Icons library
+- **Carousel**: React Slick for movie sliders
+- **API**: The Movie Database (TMDB) API
+- **HTTP Client**: Axios for API requests
 
 ## Getting Started
 
@@ -47,13 +53,15 @@ npm install
 yarn install
 ```
 
-3. Add your TMDB API key
+3. Set up your TMDB API key
 
-Edit the file `src/services/api.ts` and replace `YOUR_TMDB_API_KEY` with your actual API key:
+Create a `.env` file in the root directory and add your TMDB API key:
 
-```javascript
-const API_KEY = 'YOUR_TMDB_API_KEY';
+```env
+REACT_APP_TMDB_API_KEY=your_api_key_here
 ```
+
+Get your free API key from [TMDB](https://www.themoviedb.org/settings/api)
 
 4. Start the development server
 
