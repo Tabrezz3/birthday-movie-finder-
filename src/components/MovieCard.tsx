@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MovieCardProps } from '../types';
 import { getImageUrl, getTMDBMovieUrl } from '../services/api';
 import { motion } from 'framer-motion';
@@ -10,9 +10,6 @@ const cardVariants = {
 };
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, genres }) => {
-  const releaseYear = new Date(movie.release_date).getFullYear();
-  const movieGenres = genres.filter(genre => movie.genre_ids.includes(genre.id));
-  const [isHovering, setIsHovering] = useState(false);
   
   const handleMovieClick = () => {
     window.open(getTMDBMovieUrl(movie.id), '_blank', 'noopener,noreferrer');

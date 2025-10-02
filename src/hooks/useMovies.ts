@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getMoviesByDate, getGenres, getLanguages } from '../services/api';
+import { getMoviesByDate } from '../services/api';
 import { Movie, Genre, Language } from '../types';
 
 // Define a mapping from genre IDs to names (could be fetched initially or hardcoded if static)
