@@ -1,20 +1,26 @@
 import { MoviesResponse, GenresResponse, LanguagesResponse } from '../types';
 
-// Using API key from environment variables
-const API_KEY = process.env.REACT_APP_TMDB_API_KEY || 'c16488af7ab2efaf5b5ce51f6ff22ee1'; 
-const BASE_URL = 'https://api.themoviedb.org/3';
-
-
+// Use serverless function for production, direct API for development
+const isDevelopment = process.env.NODE_ENV === 'development';
+const API_KEY = process.env.REACT_APP_TMDB_API_KEY || 'c16488af7ab2efaf5b5ce51f6ff22ee1';
+const BASE_URL = isDevelopment ? 'https://api.themoviedb.org/3' : '/api/tmdb';
 
 // Test API connection
 export const testApiConnection = async (): Promise<boolean> => {
   try {
     console.log('Testing API connection...');
     console.log('API Key:', API_KEY ? `${API_KEY.substring(0, 8)}...` : 'Not set');
+    console.log('Base URL:', BASE_URL);
+
+    let response;
+    if (isDevelopment) {
+      response = await fetch(`${BASE_URL}/configuration?api_key=${API_KEY}`);
+    } else {
+      response = await fetch(`${BASE_URL}?endpoint=/configuration`);
+    }
     
-    const response = await fetch(`${BASE_URL}/configuration?api_key=${API_KEY}`);
     const data = await response.json();
-    
+
     if (response.ok) {
       console.log('API connection successful!', data);
       return true;
@@ -29,25 +35,45 @@ export const testApiConnection = async (): Promise<boolean> => {
 };
 
 async function tmdbFetch<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
-  const url = new URL(`${BASE_URL}${endpoint}`);
-  
-  // Add API key as URL parameter
-  url.searchParams.set('api_key', API_KEY);
-  
-  // Don't set language here if it's already in the endpoint
-  if (!endpoint.includes('language=')) {
-    url.searchParams.set('language', 'en-US');
-  }
-  
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      url.searchParams.set(key, value);
-    });
-  }
-
   try {
-    const response = await fetch(url.toString(), {
-      headers: { 
+    let url: string;
+    
+    if (isDevelopment) {
+      // Direct TMDB API call for development
+      const tmdbUrl = new URL(`https://api.themoviedb.org/3${endpoint}`);
+      tmdbUrl.searchParams.set('api_key', API_KEY);
+      
+      if (!endpoint.includes('language=')) {
+        tmdbUrl.searchParams.set('language', 'en-US');
+      }
+
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          tmdbUrl.searchParams.set(key, value);
+        });
+      }
+      
+      url = tmdbUrl.toString();
+    } else {
+      // Use serverless function for production
+      const serverlessUrl = new URL(`${window.location.origin}/api/tmdb`);
+      serverlessUrl.searchParams.set('endpoint', endpoint);
+      
+      if (!endpoint.includes('language=')) {
+        serverlessUrl.searchParams.set('language', 'en-US');
+      }
+
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          serverlessUrl.searchParams.set(key, value);
+        });
+      }
+      
+      url = serverlessUrl.toString();
+    }
+
+    const response = await fetch(url, {
+      headers: {
         'Content-Type': 'application/json'
       }
     });
@@ -67,7 +93,7 @@ export const getMoviesByDate = async (month: number, day: number, year?: number)
   try {
     const monthStr = month.toString().padStart(2, '0');
     const dayStr = day.toString().padStart(2, '0');
-    
+
     // For birthday movie finder, we want movies released on the same month/day across all years
     const params: Record<string, string> = {
       'sort_by': 'popularity.desc',
