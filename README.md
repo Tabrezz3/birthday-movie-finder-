@@ -13,9 +13,11 @@ A beautiful and intuitive React application that discovers movies released on yo
 - **Dark Theme**: Modern dark UI with smooth animations
 - **Fast Performance**: Optimized API calls with caching
 
-## Screenshots
+## Website is live at 
+[Birthday Movie Finder](https://birthday-movie-finder-zeta.vercel.app/)
 
-(Screenshots will be added once the application is deployed)
+
+
 
 ## 🛠️ Tech Stack
 
