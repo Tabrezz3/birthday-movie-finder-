@@ -24,9 +24,15 @@ vercel
 
 ### 2. Configure Environment Variables in Vercel
 1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
-2. Add: `REACT_APP_TMDB_API_KEY` = `your_actual_api_key`
-3. Make sure it's enabled for Production, Preview, and Development
+2. Add the following environment variables:
+   - `TMDB_API_KEY` = `c16488af7ab2efaf5b5ce51f6ff22ee1` (for serverless functions)
+   - `REACT_APP_TMDB_API_KEY` = `c16488af7ab2efaf5b5ce51f6ff22ee1` (for frontend build)
+3. Make sure both are enabled for Production, Preview, and Development
 4. **Important**: Redeploy after adding environment variables
+
+**Why two variables?**
+- `TMDB_API_KEY`: Used by serverless functions at runtime (no REACT_APP_ prefix)
+- `REACT_APP_TMDB_API_KEY`: Used by frontend during build time (React convention)
 
 ### 3. Test Deployment
 After deployment, test these URLs:
