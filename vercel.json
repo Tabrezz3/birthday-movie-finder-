@@ -5,6 +5,7 @@
     }
   },
   "env": {
-    "REACT_APP_TMDB_API_KEY": "@tmdb-api-key"
+    "TMDB_API_KEY": "c16488af7ab2efaf5b5ce51f6ff22ee1",
+    "REACT_APP_TMDB_API_KEY": "c16488af7ab2efaf5b5ce51f6ff22ee1"
   }
 }

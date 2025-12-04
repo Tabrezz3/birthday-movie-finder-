@@ -23,9 +23,16 @@ export default async function handler(req, res) {
       return;
     }
 
-    const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+    // In Vercel, serverless functions should use TMDB_API_KEY (without REACT_APP_ prefix)
+    // REACT_APP_ prefix is for frontend build-time variables only
+    const API_KEY = process.env.TMDB_API_KEY || process.env.REACT_APP_TMDB_API_KEY;
+    
     if (!API_KEY) {
-      res.status(500).json({ error: 'API key not configured' });
+      console.error('API Key not found. Available env vars:', Object.keys(process.env));
+      res.status(500).json({ 
+        error: 'API key not configured',
+        hint: 'Set TMDB_API_KEY environment variable in Vercel dashboard'
+      });
       return;
     }
 
@@ -42,10 +49,13 @@ export default async function handler(req, res) {
       }
     });
 
+    console.log('Fetching from TMDB:', url.toString().replace(API_KEY, 'REDACTED'));
+
     const response = await fetch(url.toString());
     const data = await response.json();
 
     if (!response.ok) {
+      console.error('TMDB API error:', response.status, data);
       res.status(response.status).json(data);
       return;
     }
@@ -53,6 +63,9 @@ export default async function handler(req, res) {
     res.status(200).json(data);
   } catch (error) {
     console.error('TMDB API Error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message 
+    });
   }
 }
